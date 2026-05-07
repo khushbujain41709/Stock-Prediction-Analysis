@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Prediction Analysis - Khushbu Jain</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        header p {
+            margin: 5px 0 0 0;
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .card h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+            border-bottom: 2px solid var(--bg-color);
+            padding-bottom: 10px;
+            font-size: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background-color: var(--secondary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: #f1f5f8;
+        }
+
+        /* Magic colors for R² and Directional Accuracy */
+        .text-success { color: var(--success-color); font-weight: bold; }
+        .text-danger { color: var(--danger-color); font-weight: bold; }
+        .text-warning { color: #f39c12; font-weight: bold; }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .conclusion-box {
+            background-color: #e8f4f8;
+            border-left: 5px solid var(--accent-color);
+            padding: 15px 20px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Nifty 50 Stock Price Prediction Analysis</h1>
+        <p>Name: Khushbu Jain | Roll Number: 23115047</p>
+    </header>
+
+    <!-- CONCLUSION HIGHLIGHTS -->
+    <div class="card">
+        <h2>Final Conclusions & Recommendations</h2>
+        <div class="conclusion-box">
+            <p><strong>Best Model by R² Score:</strong> Stacking (0.9847)</p>
+            <p><strong>Best Model by Directional Accuracy:</strong> Linear (53.93%)</p>
+            <p><strong>Most Robust Model (Lowest Variance):</strong> Stacking</p>
+            <br>
+            <p><em>Note: High R² combined with ~53% Directional Accuracy indicates the model successfully captures the overall magnitude and trend of the market, but daily precise direction remains statistically difficult to predict.</em></p>
+        </div>
+    </div>
+
+    <!-- AVERAGE PERFORMANCE -->
+    <div class="card">
+        <h2>Average Performance Across All Splits</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Model</th>
+                    <th>MAE</th>
+                    <th>RMSE</th>
+                    <th>MAPE (%)</th>
+                    <th>R² Score</th>
+                    <th>Dir. Accuracy (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- REPLACE THESE ROWS WITH YOUR ACTUAL DATA -->
+                <tr>
+                    <td><strong>Stacking</strong></td>
+                    <td>119.87</td>
+                    <td>162.29</td>
+                    <td>0.85</td>
+                    <td class="text-success">0.9847</td>
+                    <td class="text-warning">53.68</td>
+                </tr>
+                <tr>
+                    <td><strong>Linear</strong></td>
+                    <td>120.04</td>
+                    <td>162.37</td>
+                    <td>0.85</td>
+                    <td class="text-success">0.9846</td>
+                    <td class="text-warning">53.93</td>
+                </tr>
+                <tr>
+                    <td><strong>Lasso</strong></td>
+                    <td>175.77</td>
+                    <td>236.14</td>
+                    <td>1.24</td>
+                    <td class="text-success">0.9645</td>
+                    <td>52.68</td>
+                </tr>
+                <tr>
+                    <td><strong>Ridge</strong></td>
+                    <td>177.68</td>
+                    <td>242.23</td>
+                    <td>1.26</td>
+                    <td class="text-success">0.9609</td>
+                    <td>52.80</td>
+                </tr>
+                <tr>
+                    <td><strong>GRU</strong></td>
+                    <td>371.72</td>
+                    <td>459.23</td>
+                    <td>2.50</td>
+                    <td class="text-success">0.8517</td>
+                    <td>51.17</td>
+                </tr>
+                <tr>
+                    <td><strong>LSTM</strong></td>
+                    <td>758.67</td>
+                    <td>887.33</td>
+                    <td>4.73</td>
+                    <td class="text-success">0.6458</td>
+                    <td>48.51</td>
+                </tr>
+                <tr>
+                    <td><strong>RandomForest</strong></td>
+                    <td>1826.76</td>
+                    <td>2246.53</td>
+                    <td>10.83</td>
+                    <td class="text-danger">-1.5508</td>
+                    <td>47.58</td>
+                </tr>
+                <tr>
+                    <td><strong>ARIMA</strong></td>
+                    <td>2101.85</td>
+                    <td>2505.74</td>
+                    <td>13.42</td>
+                    <td class="text-danger">-1.9313</td>
+                    <td class="text-danger">4.56</td>
+                </tr>
+                <tr>
+                    <td><strong>LightGBM</strong></td>
+                    <td>2345.45</td>
+                    <td>2713.35</td>
+                    <td>14.10</td>
+                    <td class="text-danger">-2.8329</td>
+                    <td>38.11</td>
+                </tr>
+                <tr>
+                    <td><strong>XGBoost</strong></td>
+                    <td>2391.03</td>
+                    <td>2758.05</td>
+                    <td>14.40</td>
+                    <td class="text-danger">-2.9472</td>
+                    <td>43.25</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ROBUSTNESS & SPLITS SIDE BY SIDE -->
+    <div class="grid-container">
+        <!-- Robustness Table -->
+        <div class="card">
+            <h2>Robustness Analysis (Std Dev)</h2>
+            <p style="font-size: 13px; color: gray; margin-top:0;">*Lower is better. Indicates consistency across different market regimes.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>R² Std Dev</th>
+                        <th>DA Std Dev</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Stacking</strong></td><td>0.0112</td><td>1.32</td></tr>
+                    <tr><td><strong>Linear</strong></td><td>0.0114</td><td>1.16</td></tr>
+                    <tr><td><strong>Lasso</strong></td><td>0.0305</td><td>2.07</td></tr>
+                    <tr><td><strong>Ridge</strong></td><td>0.0365</td><td>2.99</td></tr>
+                    <tr><td><strong>GRU</strong></td><td>0.1371</td><td>1.65</td></tr>
+                    <tr><td><strong>LSTM</strong></td><td>0.1457</td><td>2.70</td></tr>
+                    <tr><td><strong>XGBoost</strong></td><td class="text-danger">4.2204</td><td class="text-danger">5.36</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Directional Accuracy per Split -->
+        <div class="card">
+            <h2>Directional Accuracy per Split</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Split 1</th>
+                        <th>Split 2</th>
+                        <th>Split 3</th>
+                        <th>Split 4</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Linear</strong></td><td>53.1</td><td>53.4</td><td>53.5</td><td class="text-success">55.7</td></tr>
+                    <tr><td><strong>Stacking</strong></td><td>53.1</td><td>53.0</td><td>53.5</td><td>53.1</td></tr>
+                    <tr><td><strong>Ridge</strong></td><td>50.4</td><td>51.6</td><td class="text-success">57.2</td><td>52.0</td></tr>
+                    <tr><td><strong>GRU</strong></td><td>50.7</td><td>52.4</td><td>49.0</td><td>52.6</td></tr>
+                    <tr><td><strong>LSTM</strong></td><td>48.0</td><td>52.1</td><td>45.6</td><td>48.3</td></tr>
+                    <tr><td><strong>ARIMA</strong></td><td class="text-danger">2.7</td><td class="text-danger">5.0</td><td class="text-danger">5.3</td><td class="text-danger">5.3</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
