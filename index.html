@@ -3,289 +3,475 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Prediction Analysis - Khushbu Jain</title>
+    <title>Stock Prediction Analysis | Khushbu Jain</title>
+    <!-- Import Chart.js for beautiful graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #34495e;
-            --accent-color: #3498db;
-            --bg-color: #f8f9fa;
+            --primary: #1a2a3a;
+            --secondary: #243b53;
+            --accent: #4361ee;
+            --accent-light: #e8f4fd;
+            --bg: #f0f4f8;
             --card-bg: #ffffff;
-            --text-color: #333333;
-            --success-color: #27ae60;
-            --danger-color: #e74c3c;
+            --text-main: #2d3748;
+            --text-muted: #718096;
+            --success: #38a169;
+            --danger: #e53e3e;
+            --warning: #dd6b20;
+            --border: #e2e8f0;
         }
 
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
             line-height: 1.6;
         }
 
         .container {
-            max-width: 1100px;
+            max-width: 1280px;
             margin: 0 auto;
+            padding: 30px 20px;
         }
 
+        /* Header */
         header {
-            background-color: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
-            padding: 20px 30px;
-            border-radius: 8px;
+            padding: 40px;
+            border-radius: 16px;
             margin-bottom: 30px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 25px -5px rgba(26, 42, 58, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
         }
 
-        header h1 {
-            margin: 0;
-            font-size: 24px;
+        header h1 { font-size: 28px; font-weight: 700; }
+        header p { opacity: 0.9; margin-top: 8px; font-size: 15px; }
+        
+        .header-badge {
+            background: rgba(255,255,255,0.1);
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-align: right;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .header-badge strong { display: block; font-size: 18px; color: #68d391; }
+
+        /* KPI Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
         }
 
-        header p {
-            margin: 5px 0 0 0;
-            opacity: 0.9;
-            font-size: 14px;
+        .kpi-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border-top: 4px solid var(--accent);
+            transition: transform 0.2s;
+        }
+        .kpi-card:hover { transform: translateY(-5px); }
+        
+        .kpi-title { font-size: 14px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+        .kpi-value { font-size: 32px; font-weight: 800; color: var(--text-main); margin: 10px 0; }
+        .kpi-subtitle { font-size: 14px; color: var(--text-muted); }
+
+        /* Charts */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
         }
 
         .card {
-            background-color: var(--card-bg);
-            border-radius: 8px;
-            padding: 25px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             margin-bottom: 25px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
-        .card h2 {
-            color: var(--primary-color);
-            margin-top: 0;
-            border-bottom: 2px solid var(--bg-color);
-            padding-bottom: 10px;
-            font-size: 20px;
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
         }
 
+        .card-header h2 { font-size: 18px; font-weight: 700; color: var(--primary); }
+        
+        .chart-container { position: relative; height: 300px; }
+
+        /* Tables */
+        .table-container { overflow-x: auto; }
+        
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
             font-size: 14px;
         }
 
         th, td {
-            padding: 12px 15px;
+            padding: 14px 18px;
             text-align: left;
-            border-bottom: 1px solid #e0e0e0;
+            border-bottom: 1px solid var(--border);
         }
 
         th {
-            background-color: var(--secondary-color);
-            color: white;
-            font-weight: 600;
+            background-color: var(--bg);
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
         }
 
-        tr:hover {
-            background-color: #f1f5f8;
+        tr:hover { background-color: var(--accent-light); }
+        td { font-family: 'Roboto Mono', monospace; font-size: 13px; }
+
+        /* Status Badges for text */
+        .badge { padding: 4px 10px; border-radius: 20px; font-weight: 600; font-size: 12px; }
+        .badge-success { background: #c6f6d5; color: #22543d; }
+        .badge-danger { background: #fed7d7; color: #822727; }
+        .badge-warning { background: #feebc8; color: #7b341e; }
+
+        /* Insight Box */
+        .insight-box {
+            background: linear-gradient(to right, #ebf8ff, #ffffff);
+            border-left: 5px solid var(--accent);
+            padding: 25px;
+            border-radius: 8px;
+            margin-top: 10px;
         }
+        .insight-box h3 { color: var(--accent); margin-bottom: 10px; }
 
-        /* Magic colors for R² and Directional Accuracy */
-        .text-success { color: var(--success-color); font-weight: bold; }
-        .text-danger { color: var(--danger-color); font-weight: bold; }
-        .text-warning { color: #f39c12; font-weight: bold; }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-        }
-
-        @media (max-width: 768px) {
-            .grid-container {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .conclusion-box {
-            background-color: #e8f4f8;
-            border-left: 5px solid var(--accent-color);
-            padding: 15px 20px;
-            margin-top: 15px;
+        @media (max-width: 900px) {
+            .charts-grid { grid-template-columns: 1fr; }
+            header { flex-direction: column; text-align: center; }
+            .header-badge { text-align: center; margin-top: 15px; }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <!-- Header -->
     <header>
-        <h1>Nifty 50 Stock Price Prediction Analysis</h1>
-        <p>Name: Khushbu Jain | Roll Number: 23115047</p>
+        <div>
+            <h1>Nifty 50 Stock Price Prediction</h1>
+            <p>Deep Learning Assignment | Time-Series Forecasting & Robustness Analysis</p>
+        </div>
+        <div class="header-badge">
+            <span style="font-size: 12px; opacity: 0.8;">Developed By</span>
+            <strong>Khushbu Jain</strong>
+            <span style="font-size: 13px; opacity: 0.8;">Roll: 23115047</span>
+        </div>
     </header>
 
-    <!-- CONCLUSION HIGHLIGHTS -->
-    <div class="card">
-        <h2>Final Conclusions & Recommendations</h2>
-        <div class="conclusion-box">
-            <p><strong>Best Model by R² Score:</strong> Stacking (0.9847)</p>
-            <p><strong>Best Model by Directional Accuracy:</strong> Linear (53.93%)</p>
-            <p><strong>Most Robust Model (Lowest Variance):</strong> Stacking</p>
-            <br>
-            <p><em>Note: High R² combined with ~53% Directional Accuracy indicates the model successfully captures the overall magnitude and trend of the market, but daily precise direction remains statistically difficult to predict.</em></p>
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+        <div class="kpi-card" style="border-top-color: var(--success);">
+            <div class="kpi-title">Highest R² Score</div>
+            <div class="kpi-value" style="color: var(--success);">0.9878</div>
+            <div class="kpi-subtitle">Achieved by: LightGBM & XGBoost</div>
+        </div>
+        <div class="kpi-card" style="border-top-color: var(--warning);">
+            <div class="kpi-title">Best Directional Accuracy</div>
+            <div class="kpi-value" style="color: var(--warning);">53.93%</div>
+            <div class="kpi-subtitle">Achieved by: XGBoost</div>
+        </div>
+        <div class="kpi-card" style="border-top-color: var(--accent);">
+            <div class="kpi-title">Most Robust (Lowest R² Variance)</div>
+            <div class="kpi-value" style="color: var(--accent);">0.0092</div>
+            <div class="kpi-subtitle">Achieved by: LightGBM</div>
         </div>
     </div>
 
-    <!-- AVERAGE PERFORMANCE -->
-    <div class="card">
-        <h2>Average Performance Across All Splits</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Model</th>
-                    <th>MAE</th>
-                    <th>RMSE</th>
-                    <th>MAPE (%)</th>
-                    <th>R² Score</th>
-                    <th>Dir. Accuracy (%)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- REPLACE THESE ROWS WITH YOUR ACTUAL DATA -->
-                <tr>
-                    <td><strong>Stacking</strong></td>
-                    <td>119.87</td>
-                    <td>162.29</td>
-                    <td>0.85</td>
-                    <td class="text-success">0.9847</td>
-                    <td class="text-warning">53.68</td>
-                </tr>
-                <tr>
-                    <td><strong>Linear</strong></td>
-                    <td>120.04</td>
-                    <td>162.37</td>
-                    <td>0.85</td>
-                    <td class="text-success">0.9846</td>
-                    <td class="text-warning">53.93</td>
-                </tr>
-                <tr>
-                    <td><strong>Lasso</strong></td>
-                    <td>175.77</td>
-                    <td>236.14</td>
-                    <td>1.24</td>
-                    <td class="text-success">0.9645</td>
-                    <td>52.68</td>
-                </tr>
-                <tr>
-                    <td><strong>Ridge</strong></td>
-                    <td>177.68</td>
-                    <td>242.23</td>
-                    <td>1.26</td>
-                    <td class="text-success">0.9609</td>
-                    <td>52.80</td>
-                </tr>
-                <tr>
-                    <td><strong>GRU</strong></td>
-                    <td>371.72</td>
-                    <td>459.23</td>
-                    <td>2.50</td>
-                    <td class="text-success">0.8517</td>
-                    <td>51.17</td>
-                </tr>
-                <tr>
-                    <td><strong>LSTM</strong></td>
-                    <td>758.67</td>
-                    <td>887.33</td>
-                    <td>4.73</td>
-                    <td class="text-success">0.6458</td>
-                    <td>48.51</td>
-                </tr>
-                <tr>
-                    <td><strong>RandomForest</strong></td>
-                    <td>1826.76</td>
-                    <td>2246.53</td>
-                    <td>10.83</td>
-                    <td class="text-danger">-1.5508</td>
-                    <td>47.58</td>
-                </tr>
-                <tr>
-                    <td><strong>ARIMA</strong></td>
-                    <td>2101.85</td>
-                    <td>2505.74</td>
-                    <td>13.42</td>
-                    <td class="text-danger">-1.9313</td>
-                    <td class="text-danger">4.56</td>
-                </tr>
-                <tr>
-                    <td><strong>LightGBM</strong></td>
-                    <td>2345.45</td>
-                    <td>2713.35</td>
-                    <td>14.10</td>
-                    <td class="text-danger">-2.8329</td>
-                    <td>38.11</td>
-                </tr>
-                <tr>
-                    <td><strong>XGBoost</strong></td>
-                    <td>2391.03</td>
-                    <td>2758.05</td>
-                    <td>14.40</td>
-                    <td class="text-danger">-2.9472</td>
-                    <td>43.25</td>
-                </tr>
-            </tbody>
-        </table>
+    <!-- Graphs Section -->
+    <div class="charts-grid">
+        <div class="card">
+            <div class="card-header">
+                <h2>Model Performance (R² Score)</h2>
+            </div>
+            <div class="chart-container">
+                <canvas id="r2Chart"></canvas>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2>Directional Accuracy (%)</h2>
+            </div>
+            <div class="chart-container">
+                <canvas id="daChart"></canvas>
+            </div>
+        </div>
     </div>
 
-    <!-- ROBUSTNESS & SPLITS SIDE BY SIDE -->
-    <div class="grid-container">
-        <!-- Robustness Table -->
-        <div class="card">
-            <h2>Robustness Analysis (Std Dev)</h2>
-            <p style="font-size: 13px; color: gray; margin-top:0;">*Lower is better. Indicates consistency across different market regimes.</p>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Model</th>
-                        <th>R² Std Dev</th>
-                        <th>DA Std Dev</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td><strong>Stacking</strong></td><td>0.0112</td><td>1.32</td></tr>
-                    <tr><td><strong>Linear</strong></td><td>0.0114</td><td>1.16</td></tr>
-                    <tr><td><strong>Lasso</strong></td><td>0.0305</td><td>2.07</td></tr>
-                    <tr><td><strong>Ridge</strong></td><td>0.0365</td><td>2.99</td></tr>
-                    <tr><td><strong>GRU</strong></td><td>0.1371</td><td>1.65</td></tr>
-                    <tr><td><strong>LSTM</strong></td><td>0.1457</td><td>2.70</td></tr>
-                    <tr><td><strong>XGBoost</strong></td><td class="text-danger">4.2204</td><td class="text-danger">5.36</td></tr>
-                </tbody>
-            </table>
+    <!-- Robustness Line Chart -->
+    <div class="card">
+        <div class="card-header">
+            <h2>Robustness Across Market Regimes (R² per Split)</h2>
         </div>
+        <div class="chart-container" style="height: 350px;">
+            <canvas id="robustnessChart"></canvas>
+        </div>
+    </div>
 
-        <!-- Directional Accuracy per Split -->
-        <div class="card">
-            <h2>Directional Accuracy per Split</h2>
+    <!-- Data Tables -->
+    <div class="card">
+        <div class="card-header">
+            <h2>Average Performance Across All Splits</h2>
+        </div>
+        <div class="table-container">
             <table>
                 <thead>
                     <tr>
+                        <th>Rank</th>
                         <th>Model</th>
-                        <th>Split 1</th>
-                        <th>Split 2</th>
-                        <th>Split 3</th>
-                        <th>Split 4</th>
+                        <th>MAE (Lower is better)</th>
+                        <th>RMSE (Lower is better)</th>
+                        <th>R² Score</th>
+                        <th>Dir. Accuracy (%)</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><td><strong>Linear</strong></td><td>53.1</td><td>53.4</td><td>53.5</td><td class="text-success">55.7</td></tr>
-                    <tr><td><strong>Stacking</strong></td><td>53.1</td><td>53.0</td><td>53.5</td><td>53.1</td></tr>
-                    <tr><td><strong>Ridge</strong></td><td>50.4</td><td>51.6</td><td class="text-success">57.2</td><td>52.0</td></tr>
-                    <tr><td><strong>GRU</strong></td><td>50.7</td><td>52.4</td><td>49.0</td><td>52.6</td></tr>
-                    <tr><td><strong>LSTM</strong></td><td>48.0</td><td>52.1</td><td>45.6</td><td>48.3</td></tr>
-                    <tr><td><strong>ARIMA</strong></td><td class="text-danger">2.7</td><td class="text-danger">5.0</td><td class="text-danger">5.3</td><td class="text-danger">5.3</td></tr>
+                    <tr>
+                        <td>1</td>
+                        <td><strong>LightGBM</strong></td>
+                        <td>104.21</td>
+                        <td>143.37</td>
+                        <td><span class="badge badge-success">0.9878</span></td>
+                        <td><span class="badge badge-warning">53.80%</span></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td><strong>XGBoost</strong></td>
+                        <td>104.03</td>
+                        <td>143.29</td>
+                        <td><span class="badge badge-success">0.9878</span></td>
+                        <td><span class="badge badge-warning">53.93%</span></td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td><strong>RandomForest</strong></td>
+                        <td>109.58</td>
+                        <td>149.02</td>
+                        <td><span class="badge badge-success">0.9865</span></td>
+                        <td><span class="badge badge-warning">53.51%</span></td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td><strong>Stacking</strong></td>
+                        <td>149.62</td>
+                        <td>197.88</td>
+                        <td><span class="badge badge-success">0.9774</span></td>
+                        <td>52.01%</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td><strong>Linear</strong></td>
+                        <td>149.27</td>
+                        <td>197.80</td>
+                        <td><span class="badge badge-success">0.9772</span></td>
+                        <td>52.10%</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td><strong>Ridge</strong></td>
+                        <td>198.78</td>
+                        <td>269.14</td>
+                        <td><span class="badge badge-success">0.9520</span></td>
+                        <td>53.06%</td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td><strong>Lasso</strong></td>
+                        <td>199.44</td>
+                        <td>266.75</td>
+                        <td><span class="badge badge-success">0.9545</span></td>
+                        <td>52.79%</td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td><strong>GRU</strong></td>
+                        <td>552.90</td>
+                        <td>655.89</td>
+                        <td><span class="badge badge-warning">0.5371</span></td>
+                        <td>50.14%</td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td><strong>LSTM</strong></td>
+                        <td>888.03</td>
+                        <td>1019.47</td>
+                        <td><span class="badge badge-warning">0.5359</span></td>
+                        <td>48.74%</td>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td><strong>ARIMA</strong></td>
+                        <td>2101.86</td>
+                        <td>2505.75</td>
+                        <td><span class="badge badge-danger">-1.9313</span></td>
+                        <td><span class="badge badge-danger">4.56%</span></td>
+                    </tr>
                 </tbody>
             </table>
         </div>
+    </div>
+
+    <!-- Conclusion -->
+    <div class="insight-box">
+        <h3>📊 Key Analytical Insight: The R² vs. Directional Paradox</h3>
+        <p>While Tree-based models (LightGBM, XGBoost) achieved near-perfect R² scores (~0.98), their Directional Accuracy remained stagnant at ~53% (barely above a 50% random coin flip). </p>
+        <br>
+        <p><strong>Why?</strong> By strictly shifting features (e.g., SMA_10) to prevent data leakage, the models were forced to learn from yesterday's data. The models successfully learned <em>Market Inertia</em> (i.e., the market will stay around 22,000 tomorrow if it is at 22,000 today), resulting in low point-error (High R²). However, the exact <em>daily noise</em> (whether it goes up by 20 points or down by 20 points) is fundamentally unpredictable using only historical price indicators.</p>
     </div>
 
 </div>
+
+<script>
+    // Chart Default Styles
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.color = '#718096';
+
+    const models = ['ARIMA', 'LSTM', 'GRU', 'Ridge', 'Lasso', 'Linear', 'Stacking', 'RandomForest', 'LightGBM', 'XGBoost'];
+    const r2Data = [-1.9313, 0.5359, 0.5371, 0.9520, 0.9545, 0.9772, 0.9774, 0.9865, 0.9878, 0.9878];
+    const daData = [4.56, 48.74, 50.14, 53.06, 52.79, 52.10, 52.01, 53.51, 53.80, 53.93];
+
+    // R² Bar Chart
+    const r2Ctx = document.getElementById('r2Chart').getContext('2d');
+    new Chart(r2Ctx, {
+        type: 'bar',
+        data: {
+            labels: models,
+            datasets: [{
+                label: 'R² Score',
+                data: r2Data,
+                backgroundColor: r2Data.map(val => val < 0 ? '#e53e3e' : val < 0.9 ? '#dd6b20' : '#38a169'),
+                borderRadius: 6,
+                borderSkipped: false,
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: { callbacks: { label: (context) => `R²: ${context.raw.toFixed(4)}` } }
+            },
+            scales: {
+                x: { grid: { color: '#f0f0f0' }, title: { display: true, text: 'R² Score' } },
+                y: { grid: { display: false } }
+            }
+        }
+    });
+
+    // Directional Accuracy Bar Chart
+    const daCtx = document.getElementById('daChart').getContext('2d');
+    new Chart(daCtx, {
+        type: 'bar',
+        data: {
+            labels: models,
+            datasets: [{
+                label: 'Directional Accuracy (%)',
+                data: daData,
+                backgroundColor: daData.map(val => val < 50 ? '#e53e3e' : val < 53 ? '#dd6b20' : '#4361ee'),
+                borderRadius: 6,
+                borderSkipped: false,
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                annotation: {
+                    annotations: {
+                        line1: { type: 'line', yMin: 50, yMax: 50, borderColor: 'rgb(255, 99, 132)', borderWidth: 2, borderDash: [6, 6] }
+                    }
+                },
+                tooltip: { callbacks: { label: (context) => `DA: ${context.raw.toFixed(2)}%` } }
+            },
+            scales: {
+                x: { grid: { color: '#f0f0f0' }, min: 0, max: 60, title: { display: true, text: 'Accuracy (%)' } },
+                y: { grid: { display: false } }
+            }
+        }
+    });
+
+    // Robustness Line Chart (Performance across splits)
+    const robustCtx = document.getElementById('robustnessChart').getContext('2d');
+    new Chart(robustCtx, {
+        type: 'line',
+        data: {
+            labels: ['Split 1 (2016-2018)', 'Split 2 (2019-2020)', 'Split 3 (2021-2022)', 'Split 4 (2023-2024)'],
+            datasets: [
+                {
+                    label: 'XGBoost (Best DA)',
+                    data: [0.9960, 0.9788, 0.9806, 0.9956],
+                    borderColor: '#4361ee',
+                    backgroundColor: 'rgba(67, 97, 238, 0.1)',
+                    tension: 0.3, fill: true, borderWidth: 3
+                },
+                {
+                    label: 'LightGBM (Most Robust)',
+                    data: [0.9959, 0.9794, 0.9805, 0.9957],
+                    borderColor: '#38a169',
+                    backgroundColor: 'rgba(56, 161, 105, 0.1)',
+                    tension: 0.3, fill: true, borderWidth: 3
+                },
+                {
+                    label: 'Linear Regression',
+                    data: [0.9920, 0.9619, 0.9636, 0.9914],
+                    borderColor: '#805ad5',
+                    backgroundColor: 'rgba(128, 90, 213, 0.1)',
+                    tension: 0.3, fill: true, borderWidth: 3
+                },
+                {
+                    label: 'GRU (Deep Learning)',
+                    data: [0.9638, 0.8137, -0.5919, 0.9627],
+                    borderColor: '#e53e3e',
+                    backgroundColor: 'rgba(229, 62, 62, 0.1)',
+                    tension: 0.3, fill: true, borderWidth: 3,
+                    borderDash: [5, 5] // Dashed line to show instability
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'top' },
+                tooltip: { mode: 'index', intersect: false }
+            },
+            scales: {
+                y: { 
+                    grid: { color: '#f0f0f0' }, 
+                    title: { display: true, text: 'R² Score' },
+                    suggestedMin: -1,
+                    suggestedMax: 1
+                },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+</script>
 
 </body>
 </html>
