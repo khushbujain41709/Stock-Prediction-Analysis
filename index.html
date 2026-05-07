@@ -335,7 +335,7 @@
 
     <!-- Conclusion -->
     <div class="insight-box">
-        <h3>📊 Key Analytical Insight: The R² vs. Directional Paradox</h3>
+        <h3>Key Analytical Insight: The R² vs. Directional Paradox</h3>
         <p>While Tree-based models (LightGBM, XGBoost) achieved near-perfect R² scores (~0.98), their Directional Accuracy remained stagnant at ~53% (barely above a 50% random coin flip). </p>
         <br>
         <p><strong>Why?</strong> By strictly shifting features (e.g., SMA_10) to prevent data leakage, the models were forced to learn from yesterday's data. The models successfully learned <em>Market Inertia</em> (i.e., the market will stay around 22,000 tomorrow if it is at 22,000 today), resulting in low point-error (High R²). However, the exact <em>daily noise</em> (whether it goes up by 20 points or down by 20 points) is fundamentally unpredictable using only historical price indicators.</p>
